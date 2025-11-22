@@ -1,5 +1,10 @@
 package com.car_rental_backend.Repository;
 
-public class UserRepository {
-    
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.car_rental_backend.Model.User;
+
+public interface  UserRepository extends JpaRepository<User, Long> {
+    User findByUsername(String username);
+    User findByEmail(String email);
 }
