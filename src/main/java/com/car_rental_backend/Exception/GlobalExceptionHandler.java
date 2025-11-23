@@ -19,6 +19,6 @@ public class GlobalExceptionHandler{
     ResponseEntity<String> handlingValidation(MethodArgumentNotValidException ex) {
         return ResponseEntity
                 .badRequest()
-                .body(ex.getMessage());
+                .body(ex.getFieldError().getDefaultMessage());
     }
 }
