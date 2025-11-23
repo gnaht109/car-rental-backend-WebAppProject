@@ -1,13 +1,13 @@
 package com.car_rental_backend.Controller;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.car_rental_backend.Service.UserService;
 import com.car_rental_backend.Model.User;
+import com.car_rental_backend.Service.UserService;
 
 @RestController
 @RequestMapping("/api/users")
@@ -23,9 +23,6 @@ public class UserController {
     @PostMapping("/login")
     public String login(@RequestBody User user) {
         User u = userService.login(user.getUsername(), user.getPassword());
-        if (u == null) {
-            return "LOGIN FAIL";
-        }
         return "LOGIN SUCCESS" + user.getUsername();
     }
 
@@ -34,7 +31,7 @@ public class UserController {
     public String signUp(@RequestBody User user) {
         User u = userService.signUp(
             user.getUsername(),
-            user.getPassword(), 
+            user.getPassword(),
             user.getRole(), 
             user.getEmail(), 
             user.getPhone()

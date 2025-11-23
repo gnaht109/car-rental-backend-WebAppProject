@@ -10,7 +10,7 @@ import lombok.Data;
 
 @Entity
 @Table(name = "users")
-@Data
+@Data //Auto implement getter setter
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
