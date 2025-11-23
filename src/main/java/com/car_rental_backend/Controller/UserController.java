@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.car_rental_backend.Model.User;
 import com.car_rental_backend.Service.UserService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "http://localhost:3000") // Adjust the origin as needed
@@ -23,13 +25,13 @@ public class UserController {
     @PostMapping("/login")
     public String login(@RequestBody User user) {
         User u = userService.login(user.getUsername(), user.getPassword());
-        return "LOGIN SUCCESS" + user.getUsername();
+        return "LOGIN SUCCESS " + user.getUsername();
     }
 
     //SignUp endpoint
     @PostMapping("/signup")
-    public String signUp(@RequestBody User user) {
-        User u = userService.signUp(
+    public String signUp(@RequestBody @Valid User user) {
+        User u = userService.createUser(
             user.getUsername(),
             user.getPassword(),
             user.getRole(), 
@@ -39,6 +41,6 @@ public class UserController {
         if (u == null) {
             return "REGISTER FAIL";
         }
-        return "SIGNUP SUCCESS" + user.getUsername();
+        return "SIGNUP SUCCESS " + user.getUsername();
     }
 }
