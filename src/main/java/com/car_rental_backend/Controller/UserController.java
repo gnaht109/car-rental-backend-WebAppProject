@@ -1,46 +1,48 @@
-package com.car_rental_backend.Controller;
+package com.car_rental_backend.controller;
+
+import java.util.List;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.car_rental_backend.dto.request.UserCreationRequest;
+import com.car_rental_backend.dto.response.ApiResponse;
+import com.car_rental_backend.dto.response.UserResponse;
+import com.car_rental_backend.service.UserService;
 
-import com.car_rental_backend.Model.User;
-import com.car_rental_backend.Service.UserService;
 
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "http://localhost:3000") // Adjust the origin as needed
+@RequiredArgsConstructor
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class UserController {
-    private final UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    UserService userService;
+
+    @GetMapping
+    List<UserResponse> getUsers(){
+        return userService.getUsers();
     }
 
-    //LogIn endpoint
-    @PostMapping("/login")
-    public String login(@RequestBody User user) {
-        User u = userService.login(user.getUsername(), user.getPassword());
-        return "LOGIN SUCCESS " + user.getUsername();
+    @GetMapping("/{userId}")
+    UserResponse getUser(@PathVariable("userId") Long userId){
+        return userService.getUser(userId);
     }
-
+    
     //SignUp endpoint
     @PostMapping("/signup")
-    public String signUp(@RequestBody @Valid User user) {
-        User u = userService.createUser(
-            user.getUsername(),
-            user.getPassword(),
-            user.getRole(), 
-            user.getEmail(), 
-            user.getPhone()
-        );
-        if (u == null) {
-            return "REGISTER FAIL";
-        }
-        return "SIGNUP SUCCESS " + user.getUsername();
+    ApiResponse<UserResponse> createUser(@Valid @RequestBody UserCreationRequest request) {
+        ApiResponse<UserResponse> response = new ApiResponse<>();
+        response.setResult(userService.createUser(request));
+        return response;
     }
 }

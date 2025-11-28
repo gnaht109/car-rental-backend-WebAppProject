@@ -1,13 +1,15 @@
-package com.car_rental_backend.Repository;
+package com.car_rental_backend.repository;
+
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import com.car_rental_backend.Model.User;
+import com.car_rental_backend.model.User;
 
+@Repository
 public interface  UserRepository extends JpaRepository<User, Long> {
-    User findByUsername(String username);
     User findByEmail(String email);
-    boolean existsById(Long id);
     boolean existsByUsername(String username);
-    boolean existsByEmail(String email);
+    Optional<User> findByUsername(String username);
 }
