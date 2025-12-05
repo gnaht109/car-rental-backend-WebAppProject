@@ -23,8 +23,10 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jose.Payload;
 import com.nimbusds.jose.crypto.MACVerifier;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
+import java.util.StringJoiner;
 
 import com.car_rental_backend.dto.response.IntrospectResponse;
 import com.car_rental_backend.dto.request.IntrospectRequest;
@@ -37,11 +39,15 @@ import lombok.experimental.NonFinal;
 
 import org.springframework.beans.factory.annotation.Value;
 
+import com.car_rental_backend.model.User;
+
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationService {
     UserRepository userRepository;
+    PasswordEncoder passwordEncoder;
     
     @NonFinal
     @Value("${jwt.secret}")
@@ -66,18 +72,20 @@ public class AuthenticationService {
 
     public AuthenticationResponse authenticate(AuthenticationRequest request    ) {
         // Implement authentication logic here
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        // PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
         var user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
-        boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
+        boolean authenticated = passwordEncoder.matches(
+            request.getPassword(),
+            user.getPassword());
 
         if(!authenticated) {
             throw new AppException(ErrorCode.PASSWORD_INCORRECT);
         }
 
-        var token = generateToken(request.getUsername());
+        var token = generateToken(user);
 
         return AuthenticationResponse.builder()
                 .token(token)
@@ -86,17 +94,17 @@ public class AuthenticationService {
         
     }
 
-    private String generateToken(String username) {
+    private String generateToken(User user) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(username)
+                .subject(user.getUsername())
                 .issuer("crt.com")
                 .issueTime(new Date())
                 .expirationTime(new Date(
                         Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
                 ))
-                .claim("userId", "Custom")
+                .claim("scope", buildScope(user))
                 .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
@@ -109,5 +117,15 @@ public class AuthenticationService {
         } catch (JOSEException e) {
             throw new RuntimeException(e);
         }
+
+        
+    }
+
+    private String buildScope(User user){
+        StringJoiner stringJoiner = new StringJoiner(" ");
+        if (!CollectionUtils.isEmpty(user.getRoles()))
+            user.getRoles().forEach(stringJoiner::add);
+
+        return stringJoiner.toString();
     }
 }

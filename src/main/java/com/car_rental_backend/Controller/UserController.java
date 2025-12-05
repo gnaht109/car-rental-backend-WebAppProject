@@ -16,6 +16,7 @@ import com.car_rental_backend.dto.request.UserCreationRequest;
 import com.car_rental_backend.dto.response.ApiResponse;
 import com.car_rental_backend.dto.response.UserResponse;
 import com.car_rental_backend.service.UserService;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 
 
@@ -30,23 +31,33 @@ public class UserController {
 
     @GetMapping
     ApiResponse<List<UserResponse>> getUsers(){
-        ApiResponse<List<UserResponse>> response = new ApiResponse<>();
-        response.setData(userService.getUsers());
-        return response;
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        return ApiResponse.<List<UserResponse>>builder()
+                .data(userService.getUsers())
+                .build();
     }
 
     @GetMapping("/{userId}")
     ApiResponse<UserResponse> getUser(@PathVariable("userId") Long userId){
-        ApiResponse<UserResponse> response = new ApiResponse<>();
-        response.setData(userService.getUser(userId));
-        return response;
+        return ApiResponse.<UserResponse>builder()
+                .data(userService.getUser(userId))
+                .build();
+    }
+
+    //Get own user info endpoint
+    @GetMapping("/me")
+    ApiResponse<UserResponse> getUserInfo(){
+        return ApiResponse.<UserResponse>builder()
+                .data(userService.getUserInfo())
+                .build();
     }
     
     //SignUp endpoint
     @PostMapping("/signup")
     ApiResponse<UserResponse> createUser(@Valid @RequestBody UserCreationRequest request) {
-        ApiResponse<UserResponse> response = new ApiResponse<>();
-        response.setData(userService.createUser(request));
-        return response;
+        return ApiResponse.<UserResponse>builder()
+                .data(userService.createUser(request))
+                .build();
     }
 }
