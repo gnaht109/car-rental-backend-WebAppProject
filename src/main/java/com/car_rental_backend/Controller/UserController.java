@@ -29,13 +29,17 @@ public class UserController {
     UserService userService;
 
     @GetMapping
-    List<UserResponse> getUsers(){
-        return userService.getUsers();
+    ApiResponse<List<UserResponse>> getUsers(){
+        ApiResponse<List<UserResponse>> response = new ApiResponse<>();
+        response.setData(userService.getUsers());
+        return response;
     }
 
     @GetMapping("/{userId}")
-    UserResponse getUser(@PathVariable("userId") Long userId){
-        return userService.getUser(userId);
+    ApiResponse<UserResponse> getUser(@PathVariable("userId") Long userId){
+        ApiResponse<UserResponse> response = new ApiResponse<>();
+        response.setData(userService.getUser(userId));
+        return response;
     }
     
     //SignUp endpoint

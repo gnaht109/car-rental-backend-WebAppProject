@@ -32,10 +32,6 @@ public class UserCreationRequest {
     String password;
     
     @Column(nullable = false)
-    @NotBlank(message = "Role is required")
-    String role;
-
-    @Column(nullable = false)
     @NotBlank(message = "Email is required")
     @Email(message = "Email should be valid")
     String email;

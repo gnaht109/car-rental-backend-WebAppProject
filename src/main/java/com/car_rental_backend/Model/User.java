@@ -1,5 +1,7 @@
 package com.car_rental_backend.model;
 
+import java.util.Set;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,7 +26,7 @@ public class User {
     Long id;
     String username;
     String password;
-    String role;
     String email;
     String phone;
+    Set<String> roles;
 }

@@ -6,12 +6,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.car_rental_backend.dto.request.AuthenticationRequest;
+import com.car_rental_backend.dto.request.IntrospectRequest;
 import com.car_rental_backend.dto.response.AuthenticationResponse;
 import com.car_rental_backend.service.AuthenticationService;
 import com.car_rental_backend.dto.response.ApiResponse;
+import com.car_rental_backend.dto.response.IntrospectResponse;
+
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+
+import com.nimbusds.jose.JOSEException;
+import java.text.ParseException;
 
 
 @RestController
@@ -24,12 +30,18 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     ApiResponse<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request){
-        boolean data = authenticationService.authenticate(request);
+        var data = authenticationService.authenticate(request);
         return ApiResponse.<AuthenticationResponse>builder()
-                .data(AuthenticationResponse.builder()
-                        .authenticated(data)
-                        .build())
+                .data(data)
                 .build();
     }
     
+    @PostMapping("/introspect")
+    ApiResponse<IntrospectResponse> authenticate(@RequestBody IntrospectRequest request)
+            throws JOSEException, ParseException {
+        var data = authenticationService.introspect(request);
+        return ApiResponse.<IntrospectResponse>builder()
+                .data(data)
+                .build();
+    }
 }

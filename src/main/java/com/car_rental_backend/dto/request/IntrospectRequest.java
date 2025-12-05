@@ -1,6 +1,4 @@
-package com.car_rental_backend.dto.response;
-
-import java.util.Set;
+package com.car_rental_backend.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,16 +7,10 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class UserResponse {
-    Long id;
-    String username;
-    String password;
-    String email;
-    String phone;
-
-    Set<String> roles;
+public class IntrospectRequest {
+    String token; 
 }
