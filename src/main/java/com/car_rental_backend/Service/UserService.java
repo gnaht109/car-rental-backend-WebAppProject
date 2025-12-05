@@ -1,5 +1,6 @@
 package com.car_rental_backend.service;
 
+import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.car_rental_backend.dto.request.UserCreationRequest;
 import com.car_rental_backend.dto.response.UserResponse;
+import com.car_rental_backend.enums.Role;
 import com.car_rental_backend.exception.AppException;
 import com.car_rental_backend.exception.ErrorCode;
 import com.car_rental_backend.mapper.UserMapper;
@@ -35,6 +37,10 @@ public class UserService {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         
+        HashSet<String> roles = new HashSet<>();
+        roles.add(Role.USER.name());
+        
+        user.setRoles(null);
 
         return userMapper.toUserResponse(userRepository.save(user));
     }
