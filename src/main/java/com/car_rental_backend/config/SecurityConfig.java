@@ -32,7 +32,10 @@ public class SecurityConfig {
         "/api/authentication/introspect",
         "/api/authentication/logout",
         "/api/users/me",
-        "/api/cars/post"
+        "/api/cars/me",
+        "/api/cars/**",
+        "/api/cars"
+
     };
 
     private final String[] PRIVATE_ENDPOINTS = {

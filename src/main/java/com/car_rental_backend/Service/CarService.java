@@ -1,9 +1,12 @@
 package com.car_rental_backend.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.car_rental_backend.dto.request.CarPostRequest;
 import com.car_rental_backend.dto.response.CarResponse;
+import com.car_rental_backend.dto.response.UserResponse;
 import com.car_rental_backend.exception.AppException;
 import com.car_rental_backend.exception.ErrorCode;
 import com.car_rental_backend.mapper.CarMapper;
@@ -33,5 +36,27 @@ public class CarService {
         car.setOwner(owner);
 
         return carMapper.toCarResponse(carRepository.save(car));
+    }
+
+    public List<CarResponse> getCars() {
+        return carRepository.findAll()
+                .stream()
+                .map(carMapper::toCarResponse)
+                .toList();
+    }
+
+    public CarResponse getCar(Long id) {
+        return carMapper.toCarResponse(
+                carRepository.findById(id)
+                        .orElseThrow(() -> new AppException(ErrorCode.CAR_NOT_FOUND))
+        );
+    }
+
+    public List<CarResponse> getOwnCars() {
+        User user = authContextService.getCurrentUser();
+        List<Car> cars = carRepository.findAllByOwner(user);
+        return cars.stream()
+                .map(carMapper::toCarResponse)
+                .toList();
     }
 }
