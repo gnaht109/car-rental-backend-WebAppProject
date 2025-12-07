@@ -1,7 +1,7 @@
 package com.car_rental_backend.exception;
 
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 
 import lombok.Getter;
 
@@ -13,7 +13,9 @@ public enum ErrorCode {
     USER_NOT_FOUND(1003, "User not found", HttpStatus.NOT_FOUND),
     PASSWORD_INCORRECT(1004, "Incorrect password", HttpStatus.BAD_REQUEST),
     UNAUTHENTICATED(1401, "Unauthenticated", HttpStatus.UNAUTHORIZED),
-    UNAUTHORIZED(1402, "You do not have permission to access", HttpStatus.FORBIDDEN)
+    UNAUTHORIZED(1402, "You do not have permission to access", HttpStatus.FORBIDDEN),
+    CAR_EXISTED(1101,"This car is already registered", HttpStatus.BAD_REQUEST),
+    CAR_NOT_FOUND(1102,"Car not found", HttpStatus.BAD_REQUEST) 
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

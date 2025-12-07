@@ -3,9 +3,7 @@ package com.car_rental_backend.service;
 import java.util.HashSet;
 import java.util.List;
 
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +15,6 @@ import com.car_rental_backend.exception.ErrorCode;
 import com.car_rental_backend.mapper.UserMapper;
 import com.car_rental_backend.model.User;
 import com.car_rental_backend.repository.UserRepository;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -26,6 +23,7 @@ import lombok.experimental.FieldDefaults;
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE,makeFinal= true)
 public class UserService {
+    AuthContextService authContextService;
     UserRepository userRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
@@ -68,13 +66,8 @@ public class UserService {
 
 
     //Get own user info
-    public UserResponse getUserInfo(){
-        var context = SecurityContextHolder.getContext();
-        String name = context.getAuthentication().getName();
-
-        User user = userRepository.findByUsername(name).orElseThrow(
-            () -> new AppException(ErrorCode.USER_NOT_FOUND)
-        );
+    public UserResponse getUserInfo() {
+        User user = authContextService.getCurrentUser();
         return userMapper.toUserResponse(user);
     }
 

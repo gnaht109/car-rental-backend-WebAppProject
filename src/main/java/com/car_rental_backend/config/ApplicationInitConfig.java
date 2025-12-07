@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Bean;
 @Configuration
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class ApplicationInitCongig {
+public class ApplicationInitConfig {
     
     PasswordEncoder passwordEncoder;
 

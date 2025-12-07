@@ -14,6 +14,7 @@ import com.car_rental_backend.dto.request.AuthenticationRequest;
 import com.car_rental_backend.dto.response.AuthenticationResponse;
 import com.car_rental_backend.exception.AppException;
 import com.car_rental_backend.exception.ErrorCode;
+import com.car_rental_backend.repository.InvalidatedTokenRepository;
 import com.car_rental_backend.repository.UserRepository;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
@@ -23,10 +24,12 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jose.Payload;
 import com.nimbusds.jose.crypto.MACVerifier;
+
 import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.StringJoiner;
+import java.util.UUID;
 
 import com.car_rental_backend.dto.response.IntrospectResponse;
 import com.car_rental_backend.dto.request.IntrospectRequest;
@@ -39,6 +42,8 @@ import lombok.experimental.NonFinal;
 
 import org.springframework.beans.factory.annotation.Value;
 
+import com.car_rental_backend.dto.request.LogoutRequest;
+import com.car_rental_backend.model.InvalidatedToken;
 import com.car_rental_backend.model.User;
 
 
@@ -52,25 +57,24 @@ public class AuthenticationService {
     @NonFinal
     @Value("${jwt.secret}")
     protected String SIGNER_KEY;
-    public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
+    public IntrospectResponse introspect(IntrospectRequest request)
+            throws JOSEException, ParseException {
         var token = request.getToken();
+        boolean isValid = true;
 
-        JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
-
-        SignedJWT signedJWT = SignedJWT.parse(token);
-
-        Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
-
-        var verified = signedJWT.verify(verifier);
+        try {
+            verifyToken(token);
+        } catch (AppException e) {
+           isValid = false;
+        }
 
         return IntrospectResponse.builder()
-                .valid(verified && expirationTime.after(new Date()))
+                .valid(isValid)
                 .build();
-
     }
 
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request    ) {
+    public AuthenticationResponse authenticate(AuthenticationRequest request) {
         // Implement authentication logic here
         // PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
@@ -98,13 +102,16 @@ public class AuthenticationService {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
+                // .subject(user.getUsername())
                 .subject(user.getUsername())
                 .issuer("crt.com")
                 .issueTime(new Date())
                 .expirationTime(new Date(
                         Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
                 ))
+                .jwtID(UUID.randomUUID().toString())
                 .claim("scope", buildScope(user))
+                 .claim("userId", user.getId())
                 .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
@@ -128,4 +135,21 @@ public class AuthenticationService {
 
         return stringJoiner.toString();
     }
+
+    private SignedJWT verifyToken(String token) throws JOSEException, ParseException {
+        JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
+
+        SignedJWT signedJWT = SignedJWT.parse(token);
+
+        Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+
+        var verified = signedJWT.verify(verifier);
+
+        if (!(verified && expiryTime.after(new Date())))
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
+
+        return signedJWT;
+    }
+
+
 }
