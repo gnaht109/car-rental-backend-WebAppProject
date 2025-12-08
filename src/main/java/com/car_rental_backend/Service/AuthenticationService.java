@@ -8,13 +8,11 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.car_rental_backend.dto.request.AuthenticationRequest;
 import com.car_rental_backend.dto.response.AuthenticationResponse;
 import com.car_rental_backend.exception.AppException;
 import com.car_rental_backend.exception.ErrorCode;
-import com.car_rental_backend.repository.InvalidatedTokenRepository;
 import com.car_rental_backend.repository.UserRepository;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
@@ -42,8 +40,6 @@ import lombok.experimental.NonFinal;
 
 import org.springframework.beans.factory.annotation.Value;
 
-import com.car_rental_backend.dto.request.LogoutRequest;
-import com.car_rental_backend.model.InvalidatedToken;
 import com.car_rental_backend.model.User;
 
 

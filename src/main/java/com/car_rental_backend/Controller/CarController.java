@@ -38,7 +38,7 @@ public class CarController {
     }
 
     //Post Car endpoint
-    @PostMapping("/post")
+    @PostMapping
     ApiResponse<CarResponse> postCar(@Valid @RequestBody CarPostRequest request) {
         return ApiResponse.<CarResponse>builder()
                 .data(carService.postCar(request))

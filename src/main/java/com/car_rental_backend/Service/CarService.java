@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import com.car_rental_backend.dto.request.CarPostRequest;
 import com.car_rental_backend.dto.response.CarResponse;
-import com.car_rental_backend.dto.response.UserResponse;
 import com.car_rental_backend.exception.AppException;
 import com.car_rental_backend.exception.ErrorCode;
 import com.car_rental_backend.mapper.CarMapper;

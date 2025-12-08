@@ -11,6 +11,6 @@ import com.car_rental_backend.model.Rental;
 public interface RentalMapper {
     Rental toRental(RentalCreationRequest request);
 
-    @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "client.id", target = "clientId")
     RentalResponse toRentalResponse(Rental rental);
 }

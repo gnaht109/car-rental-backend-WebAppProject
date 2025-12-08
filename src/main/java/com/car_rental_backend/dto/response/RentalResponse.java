@@ -15,7 +15,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class RentalResponse {
     Long rentalId;
-    Long userId;
+    Long clientId;
     Long carId;
     String carName;
     LocalDateTime startDate;

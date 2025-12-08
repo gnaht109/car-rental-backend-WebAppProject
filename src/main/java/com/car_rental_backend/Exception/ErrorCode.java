@@ -15,7 +15,9 @@ public enum ErrorCode {
     UNAUTHENTICATED(1401, "Unauthenticated", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1402, "You do not have permission to access", HttpStatus.FORBIDDEN),
     CAR_EXISTED(1101,"This car is already registered", HttpStatus.BAD_REQUEST),
-    CAR_NOT_FOUND(1102,"Car not found", HttpStatus.BAD_REQUEST) 
+    CAR_NOT_FOUND(1102,"Car not found", HttpStatus.BAD_REQUEST),
+    INVALID_DATE(1102,"These dates have already registered ", HttpStatus.BAD_REQUEST),
+    RENTAL_NOT_FOUND(1202,"Rental not found",HttpStatus.BAD_REQUEST)
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

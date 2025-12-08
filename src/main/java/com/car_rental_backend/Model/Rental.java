@@ -34,8 +34,8 @@ public class Rental {
     Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id")
-    User user;
+    @JoinColumn(name = "client_id")
+    User client;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "car_id")
