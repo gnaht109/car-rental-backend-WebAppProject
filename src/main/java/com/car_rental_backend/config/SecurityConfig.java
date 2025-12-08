@@ -35,7 +35,9 @@ public class SecurityConfig {
         "/api/users/me",
         "/api/cars/me",
         "/api/cars/**",
-        "/api/cars"
+        "/api/cars",
+        "/api/rentals",
+        "/api/rentals/**"
 
     };
 

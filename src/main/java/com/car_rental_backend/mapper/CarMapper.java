@@ -13,4 +13,6 @@ public interface CarMapper {
 
     @Mapping(source = "owner.id", target = "ownerId")
     CarResponse toCarResponse(Car car);
+
+    
 }

@@ -17,7 +17,7 @@ public class RentalResponse {
     Long rentalId;
     Long clientId;
     Long carId;
-    String carName;
+    String carModel;
     LocalDateTime startDate;
     LocalDateTime endDate;
     String status;
