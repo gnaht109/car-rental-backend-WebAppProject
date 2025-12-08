@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.car_rental_backend.dto.request.RentalCreationRequest;
 import com.car_rental_backend.dto.response.ApiResponse;
-import com.car_rental_backend.dto.response.CarResponse;
 import com.car_rental_backend.dto.response.RentalResponse;
 import com.car_rental_backend.service.RentalService;
 
