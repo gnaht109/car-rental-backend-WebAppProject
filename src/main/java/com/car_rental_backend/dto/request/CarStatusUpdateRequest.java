@@ -1,5 +1,7 @@
 package com.car_rental_backend.dto.request;
 
+import com.car_rental_backend.enums.CarStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,12 +13,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class CarPostRequest {
-    String brand;
-    String model;
-    int seat;
-    String plate;
-    double pricePerDay;
-    String imgUrl;
-
+public class CarStatusUpdateRequest {
+    CarStatus status;
 }

@@ -1,7 +1,5 @@
 package com.car_rental_backend.dto.response;
 
-import java.util.List;
-
 import com.car_rental_backend.enums.CarStatus;
 
 import lombok.AllArgsConstructor;
@@ -26,7 +24,7 @@ public class CarResponse {
     String plate;
     double pricePerDay;
     CarStatus status;
-    List<String> imageUrls;
+    String imgUrl;
 
 }
 

@@ -3,6 +3,7 @@ package com.car_rental_backend.controller;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -65,5 +66,13 @@ public class RentalController {
         return ApiResponse.<List<RentalResponse>>builder()
                 .data(rentalService.getRentalsOfCar(carId))
                 .build();
+    }
+
+    @DeleteMapping("/{rentalId}")
+    ApiResponse<Void> deleteRental(@PathVariable Long rentalId) {
+        rentalService.deleteRental(rentalId); // call the service, no return value
+
+        return ApiResponse.<Void>builder()
+                .build(); // no data field for Void
     }
 }

@@ -1,12 +1,11 @@
 package com.car_rental_backend.model;
 
-import java.util.List;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import com.car_rental_backend.enums.CarStatus;
 
-import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -34,6 +33,7 @@ public class Car {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     User owner;
 
     @Id
@@ -54,9 +54,6 @@ public class Car {
     @Enumerated(EnumType.STRING)
     CarStatus status = CarStatus.AVAILABLE;
 
-    @ElementCollection
-    @CollectionTable(name = "car_images", joinColumns = @JoinColumn(name = "car_id"))
-    @Column(name = "url")
-    List<String> imageUrls;
+    String imgUrl;
 
 }

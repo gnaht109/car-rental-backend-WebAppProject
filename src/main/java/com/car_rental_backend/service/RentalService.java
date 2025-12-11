@@ -2,6 +2,7 @@ package com.car_rental_backend.service;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.car_rental_backend.dto.request.RentalCreationRequest;
@@ -55,6 +56,7 @@ public class RentalService {
         rental.setCar(car);
         rental.setStatus(RentalStatus.PENDING);
 
+
         // 5. Save the rental and map to response
         return rentalMapper.toRentalResponse(rentalRepository.save(rental));
     }
@@ -91,5 +93,12 @@ public class RentalService {
                 .toList();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteRental(Long rentalId) {
+        Rental rental = rentalRepository.findById(rentalId)
+                .orElseThrow(() -> new AppException(ErrorCode.RENTAL_NOT_FOUND));
+
+        rentalRepository.delete(rental);
+    }
     
 }

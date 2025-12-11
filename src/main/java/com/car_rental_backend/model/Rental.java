@@ -2,6 +2,9 @@ package com.car_rental_backend.model;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.car_rental_backend.enums.RentalStatus;
 
 import jakarta.persistence.Entity;
@@ -35,10 +38,12 @@ public class Rental {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     User client;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "car_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     Car car;
 
     LocalDateTime startDate;

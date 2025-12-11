@@ -71,5 +71,13 @@ public class UserService {
         return userMapper.toUserResponse(user);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteUser(Long id){
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        userRepository.delete(user);
+    }
+
     
 }

@@ -2,9 +2,11 @@ package com.car_rental_backend.service;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.car_rental_backend.dto.request.CarPostRequest;
+import com.car_rental_backend.dto.request.CarStatusUpdateRequest;
 import com.car_rental_backend.dto.response.CarResponse;
 import com.car_rental_backend.exception.AppException;
 import com.car_rental_backend.exception.ErrorCode;
@@ -57,5 +59,22 @@ public class CarService {
         return cars.stream()
                 .map(carMapper::toCarResponse)
                 .toList();
+    }
+
+    public CarResponse updateStatus(Long carId, CarStatusUpdateRequest request) {
+        Car car = carRepository.findById(carId)
+                .orElseThrow(() -> new AppException(ErrorCode.CAR_NOT_FOUND));
+
+        car.setStatus(request.getStatus());
+
+        return carMapper.toCarResponse(carRepository.save(car));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteCar(Long carId) {
+        Car car = carRepository.findById(carId)
+                .orElseThrow(() -> new AppException(ErrorCode.CAR_NOT_FOUND));
+
+        carRepository.delete(car);
     }
 }

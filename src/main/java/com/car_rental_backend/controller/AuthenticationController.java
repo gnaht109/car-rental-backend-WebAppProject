@@ -50,4 +50,5 @@ public class AuthenticationController {
         return ApiResponse.<Void>builder()
                 .build();
     }
+
 }

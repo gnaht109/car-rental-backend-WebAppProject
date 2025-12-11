@@ -37,7 +37,8 @@ public class SecurityConfig {
         "/api/cars/**",
         "/api/cars",
         "/api/rentals",
-        "/api/rentals/**"
+        "/api/rentals/**",
+        "/api/rentals/cars/**"
 
     };
 
@@ -53,6 +54,7 @@ public class SecurityConfig {
         httpSecurity.authorizeHttpRequests(request ->
                 request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
                 .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS).permitAll()
+                        // .requestMatchers(HttpMethod.DELETE, PRIVATE_ENDPOINTS).hasRole(Role.ADMIN.name())
                         // .requestMatchers(HttpMethod.GET, PRIVATE_ENDPOINTS).hasRole(Role.ADMIN.name())
                         .anyRequest().authenticated());
 

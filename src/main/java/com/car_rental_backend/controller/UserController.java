@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,10 +55,19 @@ public class UserController {
     }
     
     //SignUp endpoint
-    @PostMapping
+    @PostMapping("/signup")
     ApiResponse<UserResponse> createUser(@Valid @RequestBody UserCreationRequest request) {
         return ApiResponse.<UserResponse>builder()
                 .data(userService.createUser(request))
                 .build();
+    }
+
+    //DELETE USER
+    @DeleteMapping("/{userId}")
+    ApiResponse<Void> deleteUser(@PathVariable Long userId) {
+        userService.deleteUser(userId); // call the service, no return value
+
+        return ApiResponse.<Void>builder()
+                .build(); // no data field for Void
     }
 }
