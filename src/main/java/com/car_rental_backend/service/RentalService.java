@@ -69,15 +69,15 @@ public class RentalService {
         rental.setCar(car);
         rental.setStatus(RentalStatus.PENDING);
 
-        long rawDays = ChronoUnit.DAYS.between(request.getStartDate(), request.getEndDate());
-        if (rawDays <= 0) {
+        long days = ChronoUnit.DAYS.between(request.getStartDate(), request.getEndDate());
+        if (days <= 0) {
             throw new AppException(ErrorCode.INVALID_DATE);
         }
 
-        double days = (double) rawDays;
-        double totalPrice = days * car.getPricePerDay();
-
+        double totalPriceDouble = days * car.getPricePerDay();
+        long totalPrice =(long)totalPriceDouble;
         rental.setTotalPrice(totalPrice);
+
 
 
         // 5. Save the rental and map to response
