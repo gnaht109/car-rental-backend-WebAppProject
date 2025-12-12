@@ -21,4 +21,5 @@ public class RentalResponse {
     LocalDateTime startDate;
     LocalDateTime endDate;
     String status;
+    long totalPrice;
 }

@@ -49,6 +49,8 @@ public class Rental {
     LocalDateTime startDate;
     LocalDateTime endDate;
 
+    long totalPrice;
+
     @Enumerated(EnumType.STRING)
     RentalStatus status; // PENDING, ACTIVE, COMPLETED, CANCELLED
 }

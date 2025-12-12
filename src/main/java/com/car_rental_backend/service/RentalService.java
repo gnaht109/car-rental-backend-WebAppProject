@@ -1,5 +1,6 @@
 package com.car_rental_backend.service;
 
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.springframework.scheduling.annotation.Scheduled;
@@ -67,6 +68,16 @@ public class RentalService {
         rental.setClient(client);
         rental.setCar(car);
         rental.setStatus(RentalStatus.PENDING);
+
+        long rawDays = ChronoUnit.DAYS.between(request.getStartDate(), request.getEndDate());
+        if (rawDays <= 0) {
+            throw new AppException(ErrorCode.INVALID_DATE);
+        }
+
+        double days = (double) rawDays;
+        double totalPrice = days * car.getPricePerDay();
+
+        rental.setTotalPrice(totalPrice);
 
 
         // 5. Save the rental and map to response
