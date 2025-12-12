@@ -84,7 +84,7 @@ public class RentalController {
             @RequestBody RentalStatusUpdateRequest request) {
 
         return ApiResponse.<RentalResponse>builder()
-                .data(rentalService.updateRentalStatus(rentalId, request))
+                .data(rentalService.updateRentalStatus(rentalId, request.getStatus()))
                 .build();
     }
 }
