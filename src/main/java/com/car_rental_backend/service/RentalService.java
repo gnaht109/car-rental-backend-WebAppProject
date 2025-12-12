@@ -2,6 +2,7 @@ package com.car_rental_backend.service;
 
 import java.util.List;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -114,6 +115,31 @@ public class RentalService {
                 .orElseThrow(() -> new AppException(ErrorCode.RENTAL_NOT_FOUND));
 
         rentalRepository.delete(rental);
+    }
+
+    @PreAuthorize("hasRole('ADMIN') or @rentalService.isCarOwnerOrClient(#rentalId)")
+    public RentalResponse updateRentalStatus(Long rentalId, RentalStatus newStatus) {
+
+        Rental rental = rentalRepository.findById(rentalId)
+                .orElseThrow(() -> new AppException(ErrorCode.RENTAL_NOT_FOUND));
+
+        rental.setStatus(newStatus);
+
+        return rentalMapper.toRentalResponse(
+            rentalRepository.save(rental)
+    );
+    }
+
+
+    @Scheduled(cron = "0 0 * * * *")  // every hour
+    public void autoCompleteExpiredRentals() {
+        List<Rental> expiredRentals = rentalRepository.findExpiredActiveRentals();
+
+        expiredRentals.forEach(rental -> {
+            rental.setStatus(RentalStatus.COMPLETED);
+        });
+
+        rentalRepository.saveAll(expiredRentals);
     }
 
     

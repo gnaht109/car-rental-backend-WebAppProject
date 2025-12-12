@@ -24,4 +24,11 @@ public interface RentalRepository extends JpaRepository<Rental, Long>{
         @Param("endDate") LocalDateTime endDate,
         @Param("statuses") List<RentalStatus> statuses
     );
+
+    @Query("""
+    SELECT r FROM Rental r
+    WHERE r.status = 'ACTIVE'
+      AND r.endDate < CURRENT_DATE
+    """)
+    List<Rental> findExpiredActiveRentals();
 }

@@ -10,9 +10,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.car_rental_backend.dto.request.UpdateUserRequest;
 import com.car_rental_backend.dto.request.UserCreationRequest;
 import com.car_rental_backend.dto.response.ApiResponse;
 import com.car_rental_backend.dto.response.UserResponse;
@@ -70,4 +73,15 @@ public class UserController {
         return ApiResponse.<Void>builder()
                 .build(); // no data field for Void
     }
+
+    //UPDATE USER
+    @PutMapping("/{userId}")
+    ApiResponse<UserResponse> updateUser(@PathVariable Long userId,
+                                         @RequestBody UpdateUserRequest request) {
+        return ApiResponse.<UserResponse>builder()
+                .data(userService.updateUser(userId, request))
+                .build();
+    }
+
+    
 }

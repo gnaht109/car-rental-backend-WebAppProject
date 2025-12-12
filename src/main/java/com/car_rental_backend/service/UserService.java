@@ -7,6 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.car_rental_backend.dto.request.UpdateUserRequest;
 import com.car_rental_backend.dto.request.UserCreationRequest;
 import com.car_rental_backend.dto.response.UserResponse;
 import com.car_rental_backend.enums.Role;
@@ -78,6 +79,46 @@ public class UserService {
             .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         userRepository.delete(user);
+    }
+
+    //update User
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public UserResponse updateUser(Long id, UpdateUserRequest request) {
+        User current = authContextService.getCurrentUser();
+        boolean isAdmin = current.getRoles().contains(Role.ADMIN.name());
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        //Nếu không phải admin hoặc nếu current không phải user đó
+        if (!isAdmin && !current.getId().equals(user.getId())) {
+            throw new AppException(ErrorCode.UNAUTHORIZED);
+        }
+
+        // username
+        if (request.getUsername() != null) {
+            if (userRepository.existsByUsername(request.getUsername())
+                    && !request.getUsername().equals(user.getUsername())) {
+                throw new AppException(ErrorCode.USER_EXISTED);
+            }
+            user.setUsername(request.getUsername());
+        }
+
+        // email
+        if (request.getEmail() != null) {
+            if (userRepository.existsByEmail(request.getEmail())
+                    && !request.getEmail().equals(user.getEmail())) {
+                throw new AppException(ErrorCode.EMAIL_EXISTED);
+            }
+            user.setEmail(request.getEmail());
+        }
+
+        // phone
+        if (request.getPhone() != null) {
+            user.setPhone(request.getPhone());
+        }
+
+        return userMapper.toUserResponse(userRepository.save(user));
     }
 
     

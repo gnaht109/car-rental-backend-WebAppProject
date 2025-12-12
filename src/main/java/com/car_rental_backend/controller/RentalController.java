@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.car_rental_backend.dto.request.RentalCreationRequest;
+import com.car_rental_backend.dto.request.RentalStatusUpdateRequest;
 import com.car_rental_backend.dto.response.ApiResponse;
 import com.car_rental_backend.dto.response.RentalResponse;
 import com.car_rental_backend.service.RentalService;
@@ -74,5 +76,15 @@ public class RentalController {
 
         return ApiResponse.<Void>builder()
                 .build(); // no data field for Void
+    }
+
+    @PatchMapping("/{rentalId}/status")
+    ApiResponse<RentalResponse> updateRentalStatus(
+            @PathVariable Long rentalId,
+            @RequestBody RentalStatusUpdateRequest request) {
+
+        return ApiResponse.<RentalResponse>builder()
+                .data(rentalService.updateRentalStatus(rentalId, request))
+                .build();
     }
 }
