@@ -21,7 +21,7 @@ public class PaymentController {
 
     PaymentService paymentService;
 
-    @PostMapping("/create-intent/{rentalId}")
+    @PostMapping("/create/{rentalId}")
     ApiResponse<String> createIntent(@PathVariable Long rentalId) {
         String clientSecret = paymentService.createPaymentIntent(rentalId);
         return ApiResponse.<String>builder().data(clientSecret).build();
