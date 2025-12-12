@@ -14,6 +14,8 @@ public interface RentalMapper {
     @Mapping(source = "client.id", target = "clientId")
     @Mapping(source = "id", target = "rentalId")
     @Mapping(source = "car.id", target = "carId")
+    @Mapping(source = "client.username", target = "clientName")
+    @Mapping(source = "car.plate", target = "carPlate")
     @Mapping(source = "car.model", target = "carModel")
     RentalResponse toRentalResponse(Rental rental);
 

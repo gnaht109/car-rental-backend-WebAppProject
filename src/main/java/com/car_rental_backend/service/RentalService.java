@@ -138,7 +138,7 @@ public class RentalService {
 
         return rentalMapper.toRentalResponse(
             rentalRepository.save(rental)
-    );
+        );
     }
 
 

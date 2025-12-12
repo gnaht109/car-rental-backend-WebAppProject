@@ -16,7 +16,9 @@ import lombok.experimental.FieldDefaults;
 public class RentalResponse {
     Long rentalId;
     Long clientId;
+    String clientName;
     Long carId;
+    String carPlate;
     String carModel;
     LocalDateTime startDate;
     LocalDateTime endDate;
