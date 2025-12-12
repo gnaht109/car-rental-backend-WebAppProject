@@ -29,6 +29,17 @@ public class RentalService {
     RentalMapper rentalMapper;
     AuthContextService authContextService;
 
+    public boolean isCarOwnerOrClient(Long rentalId) {
+    User currentUser = authContextService.getCurrentUser();
+    return rentalRepository.findById(rentalId)
+            .map(rental ->
+                    rental.getClient().getId().equals(currentUser.getId()) ||  // client
+                    rental.getCar().getOwner().getId().equals(currentUser.getId()) // car owner
+            )
+            .orElse(false);
+    }
+
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public RentalResponse createRental(RentalCreationRequest request) {
         User client = authContextService.getCurrentUser();
 
@@ -61,6 +72,7 @@ public class RentalService {
         return rentalMapper.toRentalResponse(rentalRepository.save(rental));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public List<RentalResponse> getRentals() {
         return rentalRepository.findAll()
                 .stream()
@@ -68,6 +80,7 @@ public class RentalService {
                 .toList();
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public RentalResponse getRental(Long id) {
         return rentalMapper.toRentalResponse(
                 rentalRepository.findById(id)
@@ -75,6 +88,7 @@ public class RentalService {
         );
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public List<RentalResponse> getOwnRentals() {
         User user = authContextService.getCurrentUser();
         List<Rental> rentals = rentalRepository.findAllByClient(user);
@@ -83,6 +97,7 @@ public class RentalService {
                 .toList();
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public List<RentalResponse> getRentalsOfCar(Long carId){
         Car car = carRepository.findById(carId)
                 .orElseThrow(()-> new AppException(ErrorCode.CAR_NOT_FOUND));
@@ -93,12 +108,13 @@ public class RentalService {
                 .toList();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or @rentalService.isCarOwnerOrClient(#rentalId)")
     public void deleteRental(Long rentalId) {
         Rental rental = rentalRepository.findById(rentalId)
                 .orElseThrow(() -> new AppException(ErrorCode.RENTAL_NOT_FOUND));
 
         rentalRepository.delete(rental);
     }
+
     
 }

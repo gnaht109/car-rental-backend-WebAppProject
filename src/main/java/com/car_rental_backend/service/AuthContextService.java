@@ -18,7 +18,7 @@ import lombok.experimental.FieldDefaults;
 public class AuthContextService {
 
     UserRepository userRepository;
-
+    
     public Long getCurrentUserId() {
         JwtAuthenticationToken authentication =
                 (JwtAuthenticationToken) SecurityContextHolder

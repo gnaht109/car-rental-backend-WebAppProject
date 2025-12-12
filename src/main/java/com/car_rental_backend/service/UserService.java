@@ -56,7 +56,7 @@ public class UserService {
     }
 
     //Get user info by id
-    @PreAuthorize("hasRole('ADMIN')") //kiem tra sau khi ra khoi method
+    @PreAuthorize("hasRole('ADMIN')") 
     public UserResponse getUser(Long id) {
         return userMapper.toUserResponse(
                 userRepository.findById(id)
@@ -66,6 +66,7 @@ public class UserService {
 
 
     //Get own user info
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public UserResponse getUserInfo() {
         User user = authContextService.getCurrentUser();
         return userMapper.toUserResponse(user);

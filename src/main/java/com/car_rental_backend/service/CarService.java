@@ -26,7 +26,15 @@ public class CarService {
     AuthContextService authContextService;
     CarMapper carMapper;
 
+
+    public boolean isOwner(Long carId) {
+    User currentUser = authContextService.getCurrentUser();
+    return carRepository.findById(carId)
+            .map(car -> car.getOwner().getId().equals(currentUser.getId()))
+            .orElse(false);
+    }
     //Post car
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public CarResponse postCar(CarPostRequest request){
         if(carRepository.existsByPlate(request.getPlate()))
             throw new AppException(ErrorCode.CAR_EXISTED);
@@ -39,6 +47,7 @@ public class CarService {
         return carMapper.toCarResponse(carRepository.save(car));
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public List<CarResponse> getCars() {
         return carRepository.findAll()
                 .stream()
@@ -46,6 +55,7 @@ public class CarService {
                 .toList();
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public CarResponse getCar(Long id) {
         return carMapper.toCarResponse(
                 carRepository.findById(id)
@@ -53,6 +63,7 @@ public class CarService {
         );
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public List<CarResponse> getOwnCars() {
         User user = authContextService.getCurrentUser();
         List<Car> cars = carRepository.findAllByOwner(user);
@@ -61,6 +72,7 @@ public class CarService {
                 .toList();
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public CarResponse updateStatus(Long carId, CarStatusUpdateRequest request) {
         Car car = carRepository.findById(carId)
                 .orElseThrow(() -> new AppException(ErrorCode.CAR_NOT_FOUND));
@@ -70,11 +82,13 @@ public class CarService {
         return carMapper.toCarResponse(carRepository.save(car));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or @carService.isOwner(#carId)")
     public void deleteCar(Long carId) {
         Car car = carRepository.findById(carId)
                 .orElseThrow(() -> new AppException(ErrorCode.CAR_NOT_FOUND));
 
         carRepository.delete(car);
     }
+
+    
 }
